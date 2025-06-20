@@ -1,15 +1,23 @@
 import { getShoppingCart } from "../utilities/fakedb";
 
 const cartProductsLoader = async () => {
-    const loadedProducts = await fetch('http://localhost:5000/products');
-    const products = await loadedProducts.json();
-
-    // if cart data is in database, you have to use async await
+   
     const storedCart = getShoppingCart();
+    console.log(storedCart)
+    const storedCartIds = Object.keys(storedCart);
+    console.log(storedCartIds);
+    const loadedProducts = await fetch('http://localhost:5000/productByIds', {
+        method: "POST",
+        headers: {
+            'content-type': 'application/json'
 
-    const savedCart = [];
+        }, body: JSON.stringify(storedCartIds)
+    });
+    const products = await loadedProducts.json();
+ const savedCart = [];
+    // if cart data is in database, you have to use async await
 
-    for (const id in storedCart) {
+   for (const id in storedCart) {
         const addedProduct = products.find(pd => pd._id === id);
         if (addedProduct) {
             const quantity = storedCart[id];
@@ -17,6 +25,9 @@ const cartProductsLoader = async () => {
             savedCart.push(addedProduct);
         }
     }
+
+
+ 
 
     // if you need to send two things
     // return [products, savedCart]
