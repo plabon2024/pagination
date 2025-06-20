@@ -12,7 +12,6 @@ app.use(express.json());
 
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.gslw7jh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -31,20 +30,21 @@ async function run() {
 
     const productCollection = client.db('emaJohnDB').collection('products');
 
-    app.get('/products', async (req, res) => {
-    
-      const page=req.query.page
-      const size=req.query.size
-      const result = await productCollection.find()
-        .skip(page * size)
+    app.get('/products', async(req, res) => {
+      const page= parseInt(req.query.page) 
+      const size=parseInt(req.query.size)
+      console.log(req.query);
+        const result = await productCollection.find()
+        .skip(page*size)
         .limit(size)
         .toArray();
-      res.send(result);
+        res.send(result);
     })
-    app.get("/productCount", async (req, res) => {
+     app.get("/productCount", async (req, res) => {
       const count = await productCollection.estimatedDocumentCount()
       res.send({ count })
     })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -56,10 +56,10 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('/', (req, res) => {
-  res.send('john is busy shopping')
+app.get('/', (req, res) =>{
+    res.send('john is busy shopping')
 })
 
-app.listen(port, () => {
-  console.log(`ema john server is running on port: ${port}`);
+app.listen(port, () =>{
+    console.log(`ema john server is running on port: ${port}`);
 })

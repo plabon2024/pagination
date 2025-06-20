@@ -15,7 +15,6 @@ const Shop = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPerPage] = useState(0);
   const { count } = useLoaderData();
-
   useEffect(() => {
     fetch(`http://localhost:5000/products?page=${currentPage}&size=${itemsPerPage}`)
       .then((res) => res.json())
@@ -66,7 +65,6 @@ const Shop = () => {
     setCart([]);
     deleteShoppingCart();
   };
-
   const numberOfPages = Math.ceil(count / itemsPerPage);
   const pages = [...Array(numberOfPages).keys()];
 
@@ -75,7 +73,7 @@ const Shop = () => {
     setItemsPerPage(value);
   };
   const handleNextPage = (e) => {
-    if (currentPage < pages.length-1) {
+    if (currentPage < pages.length - 1) {
       setCurrentPerPage(currentPage + 1);
     }
   };
@@ -107,7 +105,6 @@ const Shop = () => {
           </Link>
         </Cart>
       </div>
-
       <div>
         <button onClick={handleprevPage}>Prev</button>
         {pages.map((page) => (
