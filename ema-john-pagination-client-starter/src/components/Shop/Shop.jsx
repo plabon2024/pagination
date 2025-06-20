@@ -10,36 +10,49 @@ import "./Shop.css";
 import { Link, useLoaderData } from "react-router-dom";
 
 const Shop = () => {
+  const storedCart = getShoppingCart();
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
+  //   const [cart, setCart] = useState([]);
+  const loadedCart = useLoaderData(); // useLoaderData once
+  const [cart, setCart] = useState(loadedCart);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPerPage] = useState(0);
-  const { count } = useLoaderData();
+  const [count, setCount] = useState(0);
+  //   const { count } = useLoaderData();
+  //   const count = 76;
   useEffect(() => {
-    fetch(`http://localhost:5000/products?page=${currentPage}&size=${itemsPerPage}`)
+    fetch("http://localhost:5000/productCount")
+      .then((res) => res.json())
+      .then((data) => setCount(data.count));
+  }, []);
+
+  useEffect(() => {
+    fetch(
+      `http://localhost:5000/products?page=${currentPage}&size=${itemsPerPage}`
+    )
       .then((res) => res.json())
       .then((data) => setProducts(data));
   }, [currentPage]);
 
-  useEffect(() => {
-    const storedCart = getShoppingCart();
-    const savedCart = [];
-    // step 1: get id of the addedProduct
-    for (const id in storedCart) {
-      // step 2: get product from products state by using id
-      const addedProduct = products.find((product) => product._id === id);
-      if (addedProduct) {
-        // step 3: add quantity
-        const quantity = storedCart[id];
-        addedProduct.quantity = quantity;
-        // step 4: add the added product to the saved cart
-        savedCart.push(addedProduct);
-      }
-      // console.log('added Product', addedProduct)
-    }
-    // step 5: set the cart
-    setCart(savedCart);
-  }, [products]);
+  //   useEffect(() => {
+  //     console.log(storedCart);
+  //     const savedCart = [];
+  //     // step 1: get id of the addedProduct
+  //     for (const id in storedCart) {
+  //       // step 2: get product from products state by using id
+  //       const addedProduct = products.find((product) => product._id === id);
+  //       if (addedProduct) {
+  //         // step 3: add quantity
+  //         const quantity = storedCart[id];
+  //         addedProduct.quantity = quantity;
+  //         // step 4: add the added product to the saved cart
+  //         savedCart.push(addedProduct);
+  //       }
+  //       // console.log('added Product', addedProduct)
+  //     }
+  //     // step 5: set the cart
+  //     setCart(savedCart);
+  //   }, [products]);
 
   const handleAddToCart = (product) => {
     // cart.push(product); '
@@ -86,7 +99,7 @@ const Shop = () => {
   //   for (let i = 0; i < numberOfPages; i++) {
   //     pages.push(i);
   //   }
-  console.log(pages);
+//   console.log(pages);
   return (
     <div className="shop-container">
       <div className="products-container">
@@ -111,7 +124,7 @@ const Shop = () => {
           <button
             onClick={() => setCurrentPerPage(page)}
             key={page}
-            className={currentPage === page && "selected"}
+            className={currentPage === page ? "selected": ""}
           >
             {page}
           </button>
