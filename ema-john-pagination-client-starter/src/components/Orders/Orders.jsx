@@ -10,10 +10,25 @@ const Orders = () => {
   const [cart, setCart] = useState(savedCart);
 
   const handleRemoveFromCart = (id) => {
-    const remaining = cart.filter((product) => product._id !== id);
-    console.log(cart, id);
-    setCart(remaining);
-    removeFromDb(id);
+    const existingProduct = cart.find((product) => product._id === id);
+    let updatedCart = [];
+
+    if (existingProduct) {
+      if (existingProduct.quantity > 1) {
+        const updatedProduct = {
+          ...existingProduct,
+          quantity: existingProduct.quantity - 1,
+        };
+        updatedCart = cart.map((product) =>
+          product._id === id ? updatedProduct : product
+        );
+      } else {
+        updatedCart = cart.filter((product) => product._id !== id);
+      }
+
+      setCart(updatedCart);
+      removeFromDb(id);
+    }
   };
 
   const handleClearCart = () => {
